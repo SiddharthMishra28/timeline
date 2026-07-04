@@ -125,10 +125,13 @@ export default function MemoryDetail() {
                 {format(memory.eventDateTime, "PPPP 'at' p")}
               </span>
               {memory.locationName && (
-                <span className="flex items-center gap-1">
-                  <MapPin size={16} />
+                <button
+                  onClick={() => window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(memory.locationName!)}${memory.latitude ? `&query_place_id=${memory.latitude},${memory.longitude}` : ''}`, '_blank')}
+                  className="flex items-center gap-1 bg-accent/10 text-accent px-3 py-1 rounded-full hover:scale-105 transition-transform"
+                >
+                  <MapPin size={16} strokeWidth={3} />
                   {memory.locationName}
-                </span>
+                </button>
               )}
             </div>
           </div>

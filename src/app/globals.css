@@ -1,1 +1,76 @@
 @import "tailwindcss";
+
+@theme {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-accent: var(--accent);
+  --color-card: var(--card);
+  --color-border: var(--border);
+}
+
+:root {
+  --background: #f8f9ff;
+  --foreground: #0f172a;
+  --primary: #ff3d71; /* Energetic Pink */
+  --primary-foreground: #ffffff;
+  --secondary: #3366ff; /* Bold Blue */
+  --accent: #00d68f; /* Neon Green */
+  --card: #ffffff;
+  --border: #edf1f7;
+
+  --radius-xl: 2rem;
+  --radius-2xl: 3rem;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #151a30;
+    --foreground: #ffffff;
+    --primary: #ff3d71;
+    --primary-foreground: #ffffff;
+    --secondary: #598bff;
+    --accent: #00e096;
+    --card: #222b45;
+    --border: #101426;
+  }
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  -webkit-tap-highlight-color: transparent;
+  overflow-x: hidden;
+}
+
+.glass {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.dark .glass {
+  background: rgba(34, 43, 69, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.energetic-gradient {
+  background: linear-gradient(135deg, #ff3d71 0%, #ffaa00 100%);
+}
+
+.secondary-gradient {
+  background: linear-gradient(135deg, #3366ff 0%, #00d68f 100%);
+}
+
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+  100% { transform: translateY(0px); }
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}

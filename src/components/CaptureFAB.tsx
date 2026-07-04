@@ -1,16 +1,28 @@
 "use client";
 
-import { Plus } from "lucide-react";
+import { Plus, Zap } from "lucide-react";
 import Link from "next/link";
+import { motion } from "framer-motion";
 
 export function CaptureFAB() {
   return (
-    <Link
-      href="/create"
-      className="fixed bottom-24 right-6 w-14 h-14 bg-primary text-primary-foreground rounded-full flex items-center justify-center shadow-lg active:scale-95 transition-transform z-40"
-      aria-label="Capture memory"
+    <motion.div
+      initial={{ scale: 0, rotate: -45 }}
+      animate={{ scale: 1, rotate: 0 }}
+      whileHover={{ scale: 1.1, rotate: 5 }}
+      whileTap={{ scale: 0.9 }}
+      className="fixed bottom-24 right-6 z-40"
     >
-      <Plus size={32} />
-    </Link>
+      <Link
+        href="/create"
+        className="w-16 h-16 energetic-gradient text-white rounded-[2rem] flex items-center justify-center shadow-2xl relative group"
+        aria-label="Capture memory"
+      >
+        <Plus size={36} strokeWidth={3} />
+        <div className="absolute -top-1 -right-1 bg-accent text-white p-1.5 rounded-full shadow-lg group-hover:animate-bounce">
+           <Zap size={12} fill="currentColor" />
+        </div>
+      </Link>
+    </motion.div>
   );
 }

@@ -6,7 +6,7 @@ import { TimelineCard } from "@/components/TimelineCard";
 import { BottomNav } from "@/components/BottomNav";
 import { CaptureFAB } from "@/components/CaptureFAB";
 import { AppHeader } from "@/components/AppHeader";
-import { PlusCircle, Play, Sparkles } from "lucide-react";
+import { Play, Sparkles, Zap, ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
@@ -20,53 +20,65 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-background">
-      <AppHeader title="Memories" />
+      <AppHeader title="LifeStream" />
 
-      <div className="max-w-md mx-auto px-4 py-6">
+      <div className="max-w-md mx-auto px-6 py-8">
         {memories === undefined ? (
           <div className="flex flex-col items-center justify-center py-20">
-            <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+            <motion.div
+              animate={{ rotate: 360 }}
+              transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+              className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full"
+            />
           </div>
         ) : memories.length === 0 ? (
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
             className="flex flex-col items-center justify-center py-20 text-center"
           >
-            <div className="w-20 h-20 bg-muted rounded-full flex items-center justify-center mb-4 text-muted-foreground">
-              <PlusCircle size={40} />
+            <div className="w-32 h-32 bg-primary/10 rounded-[3rem] flex items-center justify-center mb-8 text-primary animate-float">
+              <Zap size={64} fill="currentColor" />
             </div>
-            <h2 className="text-xl font-bold mb-2">No memories yet</h2>
-            <p className="text-muted-foreground mb-6 max-w-[250px]">
-              Capture your first moment and start building your timeline.
+            <h2 className="text-3xl font-black mb-4 tracking-tighter">Your story starts here<span className="text-primary">.</span></h2>
+            <p className="text-muted-foreground mb-8 max-w-[280px] font-medium">
+              Capture your first epic win and build the stream of your life.
             </p>
             <Link
               href="/create"
-              className="bg-primary text-primary-foreground px-6 py-2 rounded-full font-medium shadow-sm active:scale-95 transition-transform"
+              className="energetic-gradient text-white px-10 py-4 rounded-full font-black shadow-2xl active:scale-95 transition-transform flex items-center gap-2"
             >
-              Start Creating
+              Start Stream
+              <ArrowRight size={20} strokeWidth={3} />
             </Link>
           </motion.div>
         ) : (
-          <div className="space-y-6">
+          <div className="space-y-10">
             {/* Spotlight / Reel Trigger */}
             <motion.div
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              className="bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 rounded-3xl p-6 text-white shadow-xl relative overflow-hidden"
+              initial={{ y: 20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              className="energetic-gradient rounded-[3rem] p-8 text-white shadow-[0_20px_50px_rgba(255,61,113,0.3)] relative overflow-hidden group"
             >
-              <div className="absolute top-0 right-0 p-4 opacity-20">
-                 <Sparkles size={100} />
-              </div>
+              <motion.div
+                animate={{ rotate: 360 }}
+                transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+                className="absolute top-0 right-0 p-4 opacity-10"
+              >
+                 <Sparkles size={200} />
+              </motion.div>
               <div className="relative z-10">
-                <h2 className="text-2xl font-black mb-1">Your Story</h2>
-                <p className="text-white/80 text-sm mb-4">Relive your journey through an animated movie of your life.</p>
+                <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] mb-2 text-white/80">
+                   <Play size={10} fill="currentColor" />
+                   Premiere Now
+                </div>
+                <h2 className="text-4xl font-black mb-2 tracking-tighter">Life Movie<span className="text-yellow-400">.</span></h2>
+                <p className="text-white/90 text-sm mb-6 font-medium leading-relaxed max-w-[200px]">Watch your memories come to life in a cinematic reel.</p>
                 <button
                   onClick={() => setIsReelOpen(true)}
-                  className="flex items-center gap-2 bg-white text-indigo-600 px-5 py-2 rounded-full font-bold text-sm shadow-lg active:scale-95 transition-transform"
+                  className="bg-white text-primary px-8 py-3 rounded-full font-black text-sm shadow-xl active:scale-95 transition-transform group-hover:scale-105"
                 >
-                  <Play size={16} fill="currentColor" />
-                  Watch Reel
+                  Play All
                 </button>
               </div>
             </motion.div>
@@ -77,18 +89,21 @@ export default function Home() {
               variants={{
                 visible: {
                   transition: {
-                    staggerChildren: 0.1
+                    staggerChildren: 0.15
                   }
                 }
               }}
-              className="space-y-2"
+              className="space-y-4"
             >
+              <div className="flex items-center justify-between mb-2">
+                 <h2 className="text-sm font-black uppercase tracking-widest text-muted-foreground px-2">Timeline Stream</h2>
+              </div>
               {memories.map((memory) => (
                 <motion.div
                   key={memory.id}
                   variants={{
-                    hidden: { opacity: 0, y: 20 },
-                    visible: { opacity: 1, y: 0 }
+                    hidden: { opacity: 0, x: -20 },
+                    visible: { opacity: 1, x: 0 }
                   }}
                 >
                   <TimelineCard memory={memory} />
