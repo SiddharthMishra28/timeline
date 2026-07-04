@@ -14,7 +14,9 @@ import {
   Paperclip,
   Smile,
   Calendar,
-  Loader2
+  Loader2,
+  Trash2,
+  Sparkles
 } from "lucide-react";
 import { format } from "date-fns";
 import Image from "next/image";
@@ -31,6 +33,7 @@ export default function EditMemory() {
   const [locationName, setLocationName] = useState("");
   const [mood, setMood] = useState<Mood>("neutral");
   const [tags, setTags] = useState("");
+  const [isAchievement, setIsAchievement] = useState(false);
   const [attachments, setAttachments] = useState<Attachment[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
@@ -47,6 +50,7 @@ export default function EditMemory() {
         setLocationName(memory.locationName || "");
         setMood(memory.mood || "neutral");
         setTags(memory.tags.join(", "));
+        setIsAchievement(memory.isAchievement || false);
         setAttachments(memory.attachments || []);
       }
       setIsLoading(false);
@@ -86,6 +90,13 @@ export default function EditMemory() {
     });
   };
 
+  const handleDelete = async () => {
+    if (confirm("Are you sure you want to delete this memory?")) {
+      await db.memories.delete(id);
+      router.push("/");
+    }
+  };
+
   const handleSave = async () => {
     setIsSaving(true);
     try {
@@ -97,6 +108,7 @@ export default function EditMemory() {
         locationName,
         mood,
         tags: tags.split(',').map(t => t.trim()).filter(t => t !== ""),
+        isAchievement,
         attachments
       });
       router.push(`/memory/${id}`);
@@ -115,13 +127,18 @@ export default function EditMemory() {
           <ChevronLeft size={24} />
         </button>
         <h1 className="text-lg font-bold">Edit Memory</h1>
-        <button
-          onClick={handleSave}
-          disabled={isSaving}
-          className="text-primary font-bold disabled:opacity-50"
-        >
-          {isSaving ? <Loader2 className="animate-spin" size={20} /> : "Save"}
-        </button>
+        <div className="flex gap-2">
+           <button onClick={handleDelete} className="p-2 text-muted-foreground">
+             <Trash2 size={20} />
+           </button>
+           <button
+             onClick={handleSave}
+             disabled={isSaving}
+             className="text-primary font-bold disabled:opacity-50"
+           >
+             {isSaving ? <Loader2 className="animate-spin" size={20} /> : "Save"}
+           </button>
+        </div>
       </header>
 
       <div className="flex-1 overflow-y-auto p-4 max-w-md mx-auto w-full space-y-6">
@@ -203,6 +220,19 @@ export default function EditMemory() {
               value={tags}
               onChange={(e) => setTags(e.target.value)}
             />
+          </div>
+
+          <div className="flex items-center justify-between py-2 px-4 bg-yellow-500/10 rounded-2xl border border-yellow-500/20">
+             <div className="flex items-center gap-3 text-yellow-600">
+                <Sparkles size={20} />
+                <span className="text-sm font-bold">Mark as Achievement</span>
+             </div>
+             <input
+                type="checkbox"
+                className="w-5 h-5 rounded border-yellow-500 text-yellow-500 focus:ring-yellow-500"
+                checked={isAchievement}
+                onChange={(e) => setIsAchievement(e.target.checked)}
+             />
           </div>
         </div>
       </div>

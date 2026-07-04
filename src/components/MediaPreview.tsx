@@ -16,11 +16,28 @@ export function MediaPreview({ attachment }: { attachment: Attachment }) {
     );
   }
 
+  if (attachment.type === 'video') {
+    return url ? (
+      <video src={url} controls className="w-full h-full object-cover" />
+    ) : (
+      <div className="w-full h-full bg-muted animate-pulse" />
+    );
+  }
+
+  if (attachment.type === 'audio') {
+    return url ? (
+      <div className="w-full h-full flex flex-col items-center justify-center bg-indigo-50 p-4">
+        <Music size={32} className="text-indigo-500 mb-2" />
+        <audio src={url} controls className="w-full h-8" />
+      </div>
+    ) : (
+      <div className="w-full h-full bg-muted animate-pulse" />
+    );
+  }
+
   return (
     <div className="flex flex-col items-center justify-center h-full text-muted-foreground p-2">
-      {attachment.type === 'video' && <Video size={24} />}
-      {attachment.type === 'audio' && <Music size={24} />}
-      {attachment.type === 'file' && <FileText size={24} />}
+      <FileText size={24} />
       <span className="text-[10px] text-center line-clamp-1 mt-1">{attachment.fileName}</span>
     </div>
   );

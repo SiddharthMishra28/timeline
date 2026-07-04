@@ -99,9 +99,11 @@ export default function MemoryDetail() {
       <div className="flex-1 overflow-y-auto max-w-md mx-auto w-full">
         {/* Media Gallery */}
         {memory.attachments && memory.attachments.length > 0 && (
-          <div className="w-full bg-muted aspect-[4/3] relative overflow-hidden">
-            {memory.attachments.filter(a => a.type === 'photo').map((attachment) => (
-              <MediaPreview key={attachment.id} attachment={attachment} />
+          <div className="w-full bg-muted overflow-x-auto snap-x snap-mandatory flex aspect-[4/3] relative border-b border-border">
+            {memory.attachments.map((attachment) => (
+              <div key={attachment.id} className="w-full h-full shrink-0 snap-center relative">
+                <MediaPreview attachment={attachment} />
+              </div>
             ))}
           </div>
         )}
