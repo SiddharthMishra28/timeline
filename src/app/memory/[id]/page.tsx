@@ -17,6 +17,9 @@ import { format } from "date-fns";
 import Image from "next/image";
 import { BottomNav } from "@/components/BottomNav";
 import { MediaPreview } from "@/components/MediaPreview";
+import confetti from "canvas-confetti";
+import { useEffect } from "react";
+import { Sparkles } from "lucide-react";
 
 export default function MemoryDetail() {
   const params = useParams();
@@ -24,6 +27,17 @@ export default function MemoryDetail() {
   const id = parseInt(params.id as string);
 
   const memory = useLiveQuery(() => db.memories.get(id));
+
+  useEffect(() => {
+    if (memory?.isAchievement) {
+      confetti({
+        particleCount: 150,
+        spread: 70,
+        origin: { y: 0.6 },
+        colors: ['#EAB308', '#FACC15', '#000000']
+      });
+    }
+  }, [memory?.id, memory?.isAchievement]);
 
   if (memory === undefined) return null;
   if (memory === null) return <div>Memory not found</div>;
@@ -41,6 +55,23 @@ export default function MemoryDetail() {
 
   const togglePinned = async () => {
     await db.memories.update(id, { pinned: !memory.pinned });
+  };
+
+  const handleShare = async () => {
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: memory.title,
+          text: memory.description,
+          url: window.location.href,
+        });
+      } catch (err) {
+        console.error("Share failed", err);
+      }
+    } else {
+      await navigator.clipboard.writeText(window.location.href);
+      alert("Link copied to clipboard!");
+    }
   };
 
   return (
@@ -76,8 +107,16 @@ export default function MemoryDetail() {
         )}
 
         <div className="p-6 space-y-6">
+          {memory.isAchievement && (
+            <div className="flex items-center gap-2 px-4 py-2 bg-yellow-400 text-black rounded-2xl font-black uppercase tracking-tighter shadow-lg animate-bounce">
+               <Sparkles size={20} fill="currentColor" />
+               Achievement Unlocked
+            </div>
+          )}
           <div className="space-y-2">
-            <h1 className="text-3xl font-extrabold">{memory.title || "Untitled Moment"}</h1>
+            <h1 className={`text-4xl font-black leading-tight ${memory.isAchievement ? 'text-yellow-600' : ''}`}>
+              {memory.title || "Untitled Moment"}
+            </h1>
             <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
               <span className="flex items-center gap-1">
                 <Calendar size={16} />
@@ -109,9 +148,12 @@ export default function MemoryDetail() {
           )}
 
           <div className="flex justify-center pt-8">
-             <button className="flex items-center gap-2 px-6 py-3 bg-muted rounded-full text-sm font-bold">
+             <button
+              onClick={handleShare}
+              className="flex items-center gap-2 px-8 py-4 bg-primary text-primary-foreground rounded-full text-sm font-black shadow-lg active:scale-95 transition-transform"
+             >
                <Share2 size={18} />
-               Share Memory
+               Share This Moment
              </button>
           </div>
         </div>

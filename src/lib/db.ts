@@ -6,9 +6,9 @@ export class MyDatabase extends Dexie {
   settings!: Table<UserSettings>;
 
   constructor() {
-    super('MemoryTimelineDB');
+    super('MemoryTimelineDB_v2'); // Increment version name for fresh start with new schema
     this.version(1).stores({
-      memories: '++id, title, eventDateTime, category, *tags, pinned, favorite',
+      memories: '++id, title, eventDateTime, category, *tags, pinned, favorite, isAchievement',
       settings: 'id'
     });
   }

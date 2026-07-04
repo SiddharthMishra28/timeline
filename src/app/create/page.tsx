@@ -13,6 +13,7 @@ import {
   Save,
   ChevronLeft,
   Paperclip,
+  Sparkles,
   Smile,
   Calendar,
   Loader2
@@ -33,6 +34,7 @@ export default function CreateMemory() {
   const [isGettingLocation, setIsGettingLocation] = useState(false);
   const [mood, setMood] = useState<Mood>("neutral");
   const [tags, setTags] = useState("");
+  const [isAchievement, setIsAchievement] = useState(false);
   const [attachments, setAttachments] = useState<Attachment[]>([]);
   const [isSaving, setIsSaving] = useState(false);
 
@@ -126,6 +128,8 @@ export default function CreateMemory() {
         longitude,
         mood,
         tags: tags.split(',').map(t => t.trim()).filter(t => t !== ""),
+        isAchievement,
+        reactions: [],
         pinned: false,
         favorite: false,
         attachments: attachments.map(a => ({
@@ -246,6 +250,19 @@ export default function CreateMemory() {
               value={tags}
               onChange={(e) => setTags(e.target.value)}
             />
+          </div>
+
+          <div className="flex items-center justify-between py-2 px-4 bg-yellow-500/10 rounded-2xl border border-yellow-500/20">
+             <div className="flex items-center gap-3 text-yellow-600">
+                <Sparkles size={20} />
+                <span className="text-sm font-bold">Mark as Achievement</span>
+             </div>
+             <input
+                type="checkbox"
+                className="w-5 h-5 rounded border-yellow-500 text-yellow-500 focus:ring-yellow-500"
+                checked={isAchievement}
+                onChange={(e) => setIsAchievement(e.target.checked)}
+             />
           </div>
         </div>
       </div>

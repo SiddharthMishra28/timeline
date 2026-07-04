@@ -1,21 +1,21 @@
 "use client";
 
-import { useState } from "react";
 import { useLiveQuery } from "dexie-react-hooks";
 import { db } from "@/lib/db";
-import { TimelineCard } from "@/components/TimelineCard";
 import { BottomNav } from "@/components/BottomNav";
-import { Search as SearchIcon, X, SlidersHorizontal } from "lucide-react";
+import { AppHeader } from "@/components/AppHeader";
+import { Search as SearchIcon, X, SlidersHorizontal, LayoutGrid } from "lucide-react";
+import { useState } from "react";
+import { TimelineCard } from "@/components/TimelineCard";
+import { MemoryCollage } from "@/components/MemoryCollage";
+import { motion } from "framer-motion";
 
 export default function SearchPage() {
   const [query, setQuery] = useState("");
   const [activeFilter, setActiveFilter] = useState<string | null>(null);
 
   const memories = useLiveQuery(async () => {
-    if (!query && !activeFilter) return [];
-
     let collection = db.memories.orderBy("eventDateTime").reverse();
-
     const results = await collection.toArray();
 
     return results.filter(m => {
@@ -27,6 +27,7 @@ export default function SearchPage() {
       const matchesFilter = !activeFilter ||
         (activeFilter === 'favorite' && m.favorite) ||
         (activeFilter === 'pinned' && m.pinned) ||
+        (activeFilter === 'achievement' && m.isAchievement) ||
         (m.mood === activeFilter);
 
       return matchesQuery && matchesFilter;
@@ -34,72 +35,68 @@ export default function SearchPage() {
   }, [query, activeFilter]);
 
   const filters = [
-    { id: 'favorite', label: 'Favorites' },
-    { id: 'pinned', label: 'Pinned' },
-    { id: 'happy', label: 'Happy' },
-    { id: 'excited', label: 'Excited' },
-    { id: 'peaceful', label: 'Peaceful' },
+    { id: 'achievement', label: 'Achievements 🏆' },
+    { id: 'favorite', label: 'Favorites ❤️' },
+    { id: 'pinned', label: 'Pinned 📌' },
   ];
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="sticky top-0 z-40 bg-background border-b border-border p-4">
-        <div className="max-w-md mx-auto space-y-4">
-          <div className="relative">
-            <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" size={20} />
-            <input
-              type="text"
-              placeholder="Search memories, tags, places..."
-              className="w-full bg-muted border-none rounded-xl py-3 pl-10 pr-10 focus:ring-2 focus:ring-primary"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              autoFocus
-            />
-            {query && (
-              <button
-                onClick={() => setQuery("")}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground"
-              >
-                <X size={18} />
-              </button>
-            )}
-          </div>
+      <AppHeader title="Explore" showSearch={false} />
 
-          <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1">
-            <SlidersHorizontal size={18} className="text-muted-foreground shrink-0" />
-            {filters.map(filter => (
-              <button
-                key={filter.id}
-                onClick={() => setActiveFilter(activeFilter === filter.id ? null : filter.id)}
-                className={`whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-medium transition-colors ${
-                  activeFilter === filter.id
-                    ? 'bg-primary text-primary-foreground'
-                    : 'bg-muted text-muted-foreground hover:bg-muted/80'
-                }`}
-              >
-                {filter.label}
-              </button>
-            ))}
-          </div>
+      <div className="p-4 space-y-6">
+        <div className="relative">
+          <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" size={20} />
+          <input
+            type="text"
+            placeholder="Search moments, tags, places..."
+            className="w-full bg-muted border-none rounded-2xl py-4 pl-10 pr-10 focus:ring-2 focus:ring-primary shadow-inner"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+          />
         </div>
-      </div>
 
-      <div className="max-w-md mx-auto px-4 py-6 mb-20">
-        {!query && !activeFilter ? (
-          <div className="text-center py-20 text-muted-foreground">
-            <p>Try searching for "Summer" or "Travel"</p>
-          </div>
-        ) : memories?.length === 0 ? (
-          <div className="text-center py-20 text-muted-foreground">
-            <p>No memories match your search.</p>
-          </div>
-        ) : (
-          <div className="space-y-4">
-            {memories?.map(memory => (
-              <TimelineCard key={memory.id} memory={memory} />
-            ))}
-          </div>
-        )}
+        <div className="flex gap-2 overflow-x-auto no-scrollbar">
+          {filters.map(f => (
+             <button
+               key={f.id}
+               onClick={() => setActiveFilter(activeFilter === f.id ? null : f.id)}
+               className={`px-4 py-2 rounded-full text-sm font-bold transition-all whitespace-nowrap ${
+                 activeFilter === f.id ? 'bg-primary text-white scale-105' : 'bg-muted text-muted-foreground'
+               }`}
+             >
+               {f.label}
+             </button>
+          ))}
+        </div>
+
+        <div className="space-y-8 mb-20">
+           {/* Summary Collage Section */}
+           {!query && !activeFilter && memories && memories.length >= 3 && (
+              <section className="space-y-3">
+                 <div className="flex items-center gap-2 text-sm font-black uppercase tracking-widest text-muted-foreground">
+                    <LayoutGrid size={16} />
+                    <span>Highlights Collage</span>
+                 </div>
+                 <MemoryCollage memories={memories.slice(0, 5)} />
+              </section>
+           )}
+
+           <section className="space-y-4">
+              <div className="flex items-center justify-between">
+                 <h2 className="text-xl font-black">Results</h2>
+                 <span className="text-xs font-bold text-muted-foreground">{memories?.length || 0} items</span>
+              </div>
+
+              <div className="grid grid-cols-1 gap-4">
+                {memories?.map(memory => (
+                   <motion.div layout key={memory.id}>
+                      <TimelineCard memory={memory} />
+                   </motion.div>
+                ))}
+              </div>
+           </section>
+        </div>
       </div>
 
       <BottomNav />

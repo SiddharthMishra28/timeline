@@ -29,6 +29,8 @@ export interface MemoryEntry {
   pinned: boolean;
   favorite: boolean;
   attachments: Attachment[];
+  isAchievement: boolean;
+  reactions: string[]; // Emoji reactions
 }
 
 export interface UserSettings {
