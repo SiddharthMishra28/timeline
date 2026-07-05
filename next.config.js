@@ -8,7 +8,11 @@ const withPWA = require('next-pwa')({
 
 const nextConfig = {
   reactStrictMode: true,
-  turbopack: {} // Setting an empty turbopack config to satisfy Next 16 requirements when using plugins
+  output: 'export',
+  images: {
+    unoptimized: true,
+  },
+  turbopack: {},
 };
 
 module.exports = withPWA(nextConfig);

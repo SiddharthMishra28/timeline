@@ -39,3 +39,27 @@ export interface UserSettings {
   privacyLockEnabled: boolean;
   autoLocationTagging: boolean;
 }
+
+export interface UserProfile {
+  id?: number;
+  username: string;
+  displayName: string;
+  points: number;
+  level: number;
+  streak: number;
+  lastActiveDate: string;
+  badges: string[];
+  totalMemories: number;
+  totalPhotos: number;
+  totalVoices: number;
+  totalAchievements: number;
+  joinedAt: number;
+}
+
+export interface PointsLog {
+  id?: number;
+  action: string;
+  points: number;
+  timestamp: number;
+  memoryId?: number;
+}

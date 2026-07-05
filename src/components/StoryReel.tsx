@@ -24,7 +24,7 @@ export function StoryReel({ memories, onClose }: { memories: MemoryEntry[], onCl
             setIndex(prevIndex => prevIndex + 1);
             return 0;
           } else {
-            onClose();
+            setTimeout(() => onClose(), 0);
             return 100;
           }
         }

@@ -1,11 +1,13 @@
 {
-  "name": "Memory Timeline",
-  "short_name": "Memories",
-  "description": "Capture and relive your personal memories",
+  "name": "LifeStream — Capture Your Journey",
+  "short_name": "LifeStream",
+  "description": "Your life, beautifully captured. Create memories, earn badges, and level up your story.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#6366f1",
+  "background_color": "#f8f9ff",
+  "theme_color": "#ff3d71",
+  "orientation": "portrait",
+  "categories": ["lifestyle", "social", "photography"],
   "icons": [
     {
       "src": "/icons/icon-192x192.png",

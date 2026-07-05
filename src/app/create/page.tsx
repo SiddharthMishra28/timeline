@@ -16,12 +16,18 @@ import {
   Sparkles,
   Smile,
   Calendar,
-  Loader2
+  Loader2,
+  Trophy,
+  Flame,
+  Users,
+  BookOpen
 } from "lucide-react";
 import { format } from "date-fns";
 import Image from "next/image";
 import { MediaPreview } from "@/components/MediaPreview";
 import { AudioRecorder } from "@/components/AudioRecorder";
+import { useGamification } from "@/hooks/useGamification";
+import { motion } from "framer-motion";
 
 export default function CreateMemory() {
   const router = useRouter();
@@ -39,6 +45,7 @@ export default function CreateMemory() {
   const [isSaving, setIsSaving] = useState(false);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const { recordMemory } = useGamification();
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
@@ -137,6 +144,16 @@ export default function CreateMemory() {
           // We keep the blob in indexedDB
         }))
       });
+
+      // Record gamification points
+      await recordMemory({
+        hasPhoto: attachments.some(a => a.type === 'photo'),
+        hasVoice: attachments.some(a => a.type === 'audio'),
+        hasLocation: !!locationName,
+        hasTags: tags.split(',').filter(t => t.trim()).length > 0,
+        isAchievement,
+      });
+
       router.push("/");
     } catch (error) {
       console.error("Failed to save memory:", error);
